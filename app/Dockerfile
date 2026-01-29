@@ -3,10 +3,11 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
+COPY app/package.json app/pnpm-lock.yaml ./
 RUN npm install -g pnpm && pnpm install --frozen-lockfile
 
-COPY . .
+COPY shared ../shared
+COPY app .
 
 ARG UPSTASH_REDIS_REST_TOKEN
 ARG UPSTASH_REDIS_REST_URL
