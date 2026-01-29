@@ -46,6 +46,6 @@ COPY shared ../shared
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 3006
 
 CMD ["pnpm", "start"]
