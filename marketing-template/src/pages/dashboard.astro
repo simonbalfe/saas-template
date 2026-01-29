@@ -1,0 +1,8 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { DashboardPage } from "@/components/templates/dashboard-page";
+---
+
+<Layout metadata={{ title: "Dashboard - Design System", description: "Dashboard showcasing the shared design system" }}>
+  <DashboardPage client:load />
+</Layout>

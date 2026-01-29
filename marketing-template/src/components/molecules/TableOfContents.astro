@@ -1,0 +1,29 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+	headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+
+const filteredHeadings = headings.filter((heading) => heading.depth <= 3);
+---
+
+<nav class="toc">
+	<h2 class="text-sm font-light mb-4 text-foreground uppercase tracking-wider">Table of Contents</h2>
+	<ul class="space-y-2 text-sm">
+		{
+			filteredHeadings.map((heading) => (
+				<li class={`pl-${(heading.depth - 2) * 4}`}>
+					<a
+						href={`#${heading.slug}`}
+						class="text-muted-foreground hover:text-primary transition-colors block py-1"
+					>
+						{heading.text}
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</nav>

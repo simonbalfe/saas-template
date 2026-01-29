@@ -1,0 +1,8 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { TestPage } from "@/components/templates/test-page";
+---
+
+<Layout metadata={{ title: "Design System Test", description: "Testing typography and design tokens" }}>
+  <TestPage client:load />
+</Layout>

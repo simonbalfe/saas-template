@@ -1,0 +1,60 @@
+---
+import "../global.css";
+import Favicons from "../components/meta/Favicons.astro";
+import Metadata from "../components/meta/Metadata.astro";
+import PostHog from "../components/meta/posthog.astro";
+import type { MetaData } from "../types";
+import { GOOGLE_SITE_VERIFICATION_ID, SITE, METADATA, I18N } from "../consts";
+
+export interface Props {
+  metadata?: MetaData;
+}
+
+const { metadata = {} } = Astro.props;
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": SITE.name,
+  "url": SITE.site,
+  "description": METADATA.description,
+  "publisher": {
+    "@type": "Organization",
+    "name": SITE.name,
+    "url": SITE.site,
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${SITE.site}/logo.svg`
+    }
+  }
+};
+---
+
+<!doctype html>
+<html lang={I18N.language} dir={I18N.textDirection} class="scroll-smooth">
+  <head>
+  
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-site-verification" content={GOOGLE_SITE_VERIFICATION_ID} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <Favicons />
+    <Metadata {...metadata} />
+    <PostHog />
+
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z59G84V7XM"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Z59G84V7XM');
+    </script>
+  </head>
+  <body class="min-h-screen antialiased bg-background text-foreground">
+    <div class="flex min-h-screen flex-col">
+      <slot />
+    </div>
+  </body>
+</html>

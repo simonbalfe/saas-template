@@ -1,0 +1,58 @@
+/**
+ * Base Styles - Shared foundational styles
+ * 
+ * Import this file after tokens.css to get consistent base styling.
+ * Requires Tailwind CSS to be imported first.
+ */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-light;
+  }
+
+  /* Code block styling */
+  pre {
+    @apply rounded-md overflow-x-auto bg-zinc-900 text-zinc-100;
+  }
+  
+  code {
+    @apply font-mono text-sm;
+  }
+  
+  pre code {
+    @apply block p-4 text-zinc-100;
+    color: rgb(244 244 245) !important;
+  }
+  
+  :not(pre) > code {
+    @apply bg-muted text-foreground px-1.5 py-0.5 rounded text-[0.875em];
+  }
+}
+
+/* ============================================
+   Button Overrides (for consistent styling)
+   ============================================ */
+[data-slot="button"][data-variant="default"] {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+[data-slot="button"][data-variant="default"]:hover {
+  background-color: color-mix(in oklch, var(--primary) 90%, black);
+}
+
+[data-slot="button"] {
+  border-radius: var(--radius-xl);
+}

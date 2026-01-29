@@ -1,0 +1,111 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../../components/molecules/FormattedDate.astro';
+import Layout from '../../layouts/PageLayout.astro';
+import { SITE_TITLE } from '../../consts';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const metadata = {
+  title: `Blog - ${SITE_TITLE}`,
+  description: 'Hard-won lessons on AI automation, voice agents, and building businesses that run themselves.',
+};
+---
+
+<Layout metadata={metadata}>
+	<div class="flex-1">
+		<!-- Hero Section -->
+		<section class="pt-24 md:pt-32 pb-6 md:pb-8 bg-background">
+			<div class="container">
+				<div class="max-w-3xl mx-auto text-center">
+					<h1 class="text-3xl sm:text-4xl md:text-5xl font-light mb-4 tracking-tight">
+						The Playbook
+					</h1>
+					<p class="text-lg text-muted-foreground">
+						Tactics, teardowns, and lessons from the frontlines of AI automation.
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- Blog Posts -->
+		<section class="pt-6 md:pt-8 pb-12 md:pb-16">
+			<div class="container">
+				<div class="max-w-7xl mx-auto">
+					{posts.length > 0 ? (
+						<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+					{posts.map((post) => (
+						<article class="group bg-card rounded-2xl border border-border overflow-hidden flex flex-col h-full hover:shadow-lg transition-all duration-300">
+									<div class="p-6 md:p-8 flex-1 flex flex-col">
+										<div class="mb-4">
+										<time class="text-sm text-muted-foreground font-medium">
+											<FormattedDate date={post.data.pubDate} />
+										</time>
+										</div>
+										<h2 class="text-2xl font-medium mb-3 group-hover:text-primary transition-colors line-clamp-2 leading-tight">
+											<a href={`/blog/${post.id}/`} class="no-underline">
+												{post.data.title}
+											</a>
+										</h2>
+										{post.data.description && (
+											<p class="text-muted-foreground mb-6 line-clamp-3 leading-relaxed">
+												{post.data.description}
+											</p>
+										)}
+										<div class="flex flex-wrap gap-2 mb-6 mt-auto">
+											{post.data.tags && post.data.tags.slice(0, 2).map(tag => (
+												<a
+													href={`/blog/tag/${tag}`}
+													class="px-3 py-1 text-[10px] md:text-xs font-medium bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors no-underline uppercase tracking-wider"
+												>
+													{tag}
+												</a>
+											))}
+										</div>
+									</div>
+									{post.data.heroImage && (
+										<a href={`/blog/${post.id}/`} class="block mx-6 md:mx-8 mb-4 overflow-hidden rounded-xl">
+											<div class="aspect-[16/9] overflow-hidden">
+												<Image
+													width={400}
+													height={225}
+													src={post.data.heroImage}
+													alt={post.data.title}
+													class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+												/>
+											</div>
+										</a>
+									)}
+									<div class="px-6 md:px-8 pb-6 md:pb-8 pt-2">
+										<a
+											href={`/blog/${post.id}/`}
+											class="inline-flex items-center text-primary hover:text-primary/80 font-light text-sm no-underline group/link"
+										>
+											Keep reading
+											<svg class="ml-1 w-3 h-3 group-hover/link:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+											</svg>
+										</a>
+									</div>
+								</article>
+							))}
+						</div>
+					) : (
+					<div class="text-center py-16">
+						<div class="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+							<svg class="w-12 h-12 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+							</svg>
+						</div>
+						<h2 class="text-2xl font-light mb-4">We're cooking something up</h2>
+						<p class="text-muted-foreground">First post drops soon.</p>
+					</div>
+					)}
+				</div>
+			</div>
+		</section>
+	</div>
+</Layout>

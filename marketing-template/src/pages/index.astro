@@ -1,0 +1,29 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import { Hero } from "@/components/organisms/hero";
+import { Services } from "@/components/organisms/services";
+import { Pricing } from "@/components/organisms/pricing";
+import { About } from "@/components/organisms/about";
+import { SocialProof } from "@/components/organisms/social-proof";
+import { BlogCarousel } from "@/components/organisms/blog-carousel";
+import { METADATA } from "../consts";
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<PageLayout
+	metadata={{
+		title: "LaunchStack - Build, Launch & Scale Your Product",
+		description: METADATA.description,
+	}}
+>
+	<Hero client:load />
+	<Services client:load />
+	<Pricing client:load />
+	<SocialProof client:load />
+	<BlogCarousel client:load posts={posts} />
+	<About client:load />
+</PageLayout>
