@@ -1,11 +1,15 @@
-import type { Metadata } from 'next'
-import '@/src/globals.css'
-import { PostHogProvider } from '@/src/lib/providers'
-import { LayoutContent } from '@/src/components/templates/layout-content'
+import type { Metadata } from "next"
+import "@/src/globals.css"
+import { PostHogProvider } from "@/src/lib/providers"
+import { Toaster } from "@/src/components/ui/sonner"
+import { SITE_CONFIG } from "@/src/lib/constants"
 
 export const metadata: Metadata = {
-  title: 'SaaS Boilerplate',
-  description: 'A modern SaaS boilerplate with auth and payments',
+  title: {
+    default: SITE_CONFIG.name,
+    template: `%s — ${SITE_CONFIG.name}`,
+  },
+  description: SITE_CONFIG.description,
 }
 
 export default function RootLayout({
@@ -15,9 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body suppressHydrationWarning className='font-primary'>
+      <body suppressHydrationWarning className="font-primary">
         <PostHogProvider>
-          <LayoutContent>{children}</LayoutContent>
+          {children}
+          <Toaster />
         </PostHogProvider>
       </body>
     </html>
