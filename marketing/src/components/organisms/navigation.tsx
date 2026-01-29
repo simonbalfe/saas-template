@@ -3,12 +3,15 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
 import { Button } from "@/components/ui/button"
+import { SITE } from "@/consts"
 
 const navLinks = [
   { href: "/#services", label: "Features" },
   { href: "/#pricing", label: "Pricing" },
   { href: "/blog", label: "Blog" },
 ]
+
+const signupUrl = `${SITE.appUrl}/auth`
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
@@ -20,13 +23,13 @@ export function Navigation() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/40 backdrop-blur-xl">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="text-2xl font-light text-foreground cursor-pointer tracking-tight"
-            onClick={() => window.location.href = "/"}
+          <a
+            href="/"
+            className="flex items-center gap-2 text-xl font-medium text-foreground"
           >
+            <img src="/logo.svg" alt="LaunchStack" className="h-6 w-6 dark:invert" />
             LaunchStack
-          </motion.div>
+          </a>
 
           <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
@@ -41,7 +44,7 @@ export function Navigation() {
             <Button
               size="sm"
               className="bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={() => window.location.href = "/signup"}
+              onClick={() => window.location.href = signupUrl}
             >
               Sign Up
             </Button>
@@ -106,7 +109,7 @@ export function Navigation() {
                     className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
                     onClick={() => {
                       closeMenu()
-                      window.location.href = "/signup"
+                      window.location.href = signupUrl
                     }}
                   >
                     Sign Up

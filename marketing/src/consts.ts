@@ -1,6 +1,7 @@
 export const SITE = {
   name: 'LaunchStack',
   site: import.meta.env.SITE_URL || 'https://launchstack.dev',
+  appUrl: import.meta.env.PUBLIC_APP_URL || 'https://app.launchstack.dev',
   demoUrl: import.meta.env.PUBLIC_DEMO_URL || import.meta.env.DEMO_URL || 'https://demo.launchstack.dev',
   logo: '/logo.svg',
   description: 'We build MVPs that validate fast and chatbot systems that automate your operations. From idea to launch in weeks, not months.',

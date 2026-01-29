@@ -28,7 +28,10 @@ export const Navbar = () => {
   return (
     <nav className="flex items-center justify-between bg-background border-b border-border px-6 h-14 sticky top-0 z-50">
       <div className="flex items-center gap-6">
-        <Link href="/" className="text-lg font-semibold">SaaS Boilerplate</Link>
+        <Link href="/" className="flex items-center gap-2 text-xl font-medium">
+          <img src="/logo.svg" alt="LaunchStack" className="h-6 w-6 dark:invert" />
+          LaunchStack
+        </Link>
       </div>
 
       {user && (
