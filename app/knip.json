@@ -1,0 +1,8 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "next": {
+    "entry": ["src/app/**/page.tsx", "src/app/**/layout.tsx", "src/app/**/route.ts"]
+  },
+  "entry": ["*.config.{ts,mjs,js}", "drizzle.config.ts"],
+  "project": ["src/**/*.{ts,tsx}", "*.config.{ts,mjs,js}"]
+}

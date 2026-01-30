@@ -10,20 +10,145 @@ const { headings } = Astro.props;
 const filteredHeadings = headings.filter((heading) => heading.depth <= 3);
 ---
 
-<nav class="toc">
-	<h2 class="text-sm font-light mb-4 text-foreground uppercase tracking-wider">Table of Contents</h2>
-	<ul class="space-y-2 text-sm">
-		{
-			filteredHeadings.map((heading) => (
-				<li class={`pl-${(heading.depth - 2) * 4}`}>
+<nav class="toc-nav" data-toc>
+	<h2 class="text-xs font-semibold mb-4 text-muted-foreground uppercase tracking-wider">Contents</h2>
+	
+	<div class="relative flex">
+		<div class="relative mr-4 flex flex-col items-center">
+			<div class="absolute top-1 bottom-1 w-0.5 rounded-full bg-border"></div>
+			<div class="toc-progress-line absolute top-1 w-0.5 rounded-full bg-primary transition-all duration-300 ease-out" style="height: 0%"></div>
+			{filteredHeadings.map((_, index) => (
+				<div class="toc-dot-wrapper relative z-10 flex-1 flex items-start justify-center pt-0.5" data-index={index}>
+					<div class="toc-dot size-2 rounded-full border-2 border-border bg-background transition-all duration-200"></div>
+				</div>
+			))}
+		</div>
+		
+		<ul class="flex flex-1 flex-col gap-1">
+			{filteredHeadings.map((heading, index) => (
+				<li>
 					<a
 						href={`#${heading.slug}`}
-						class="text-muted-foreground hover:text-primary transition-colors block py-1"
+						data-toc-link
+						data-index={index}
+						class:list={[
+							"toc-link w-full block text-left text-sm leading-relaxed transition-colors duration-200 hover:text-foreground text-muted-foreground",
+							heading.depth === 2 && "py-1.5 font-medium",
+							heading.depth === 3 && "py-1 pl-3 text-[13px]",
+						]}
 					>
 						{heading.text}
 					</a>
 				</li>
-			))
-		}
-	</ul>
+			))}
+		</ul>
+	</div>
+	
+	<div class="mt-4 flex items-center gap-2">
+		<div class="h-1 flex-1 overflow-hidden rounded-full bg-border">
+			<div class="toc-page-progress h-full rounded-full bg-primary transition-all duration-300 ease-out" style="width: 0%"></div>
+		</div>
+		<span class="toc-progress-text text-xs tabular-nums text-muted-foreground">0%</span>
+	</div>
 </nav>
+
+<script>
+	function initTOC() {
+		const nav = document.querySelector('[data-toc]');
+		if (!nav) return;
+
+		const links = nav.querySelectorAll('[data-toc-link]') as NodeListOf<HTMLAnchorElement>;
+		const dots = nav.querySelectorAll('.toc-dot-wrapper') as NodeListOf<HTMLElement>;
+		const progressLine = nav.querySelector('.toc-progress-line') as HTMLElement;
+		const pageProgress = nav.querySelector('.toc-page-progress') as HTMLElement;
+		const progressText = nav.querySelector('.toc-progress-text') as HTMLElement;
+		
+		if (links.length === 0) return;
+
+		const headingIds = Array.from(links).map(link => {
+			const href = link.getAttribute('href');
+			return href ? href.slice(1) : '';
+		});
+
+		let activeIndex = 0;
+
+		function updateActiveState() {
+			const scrollPosition = window.scrollY + 120;
+			const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
+			const scrollProgress = Math.min((window.scrollY / documentHeight) * 100, 100);
+
+			if (pageProgress) pageProgress.style.width = `${scrollProgress}%`;
+			if (progressText) progressText.textContent = `${Math.round(scrollProgress)}%`;
+
+			let newActiveIndex = 0;
+			for (let i = 0; i < headingIds.length; i++) {
+				const element = document.getElementById(headingIds[i]);
+				if (element && element.offsetTop <= scrollPosition) {
+					newActiveIndex = i;
+				}
+			}
+
+			if (newActiveIndex !== activeIndex) {
+				activeIndex = newActiveIndex;
+				
+				links.forEach((link, index) => {
+					if (index === activeIndex) {
+						link.classList.remove('text-muted-foreground');
+						link.classList.add('text-foreground');
+					} else {
+						link.classList.remove('text-foreground');
+						link.classList.add('text-muted-foreground');
+					}
+				});
+
+				dots.forEach((wrapper, index) => {
+					const dot = wrapper.querySelector('.toc-dot') as HTMLElement;
+					if (!dot) return;
+					
+					const isActive = index === activeIndex;
+					const isPast = index <= activeIndex;
+					
+					dot.classList.remove('scale-125', 'border-primary', 'bg-primary', 'border-border', 'bg-background');
+					
+					if (isActive) {
+						dot.classList.add('scale-125', 'border-primary', 'bg-primary');
+					} else if (isPast) {
+						dot.classList.add('border-primary', 'bg-primary');
+					} else {
+						dot.classList.add('border-border', 'bg-background');
+					}
+				});
+
+				const itemProgress = links.length > 1 
+					? (activeIndex / (links.length - 1)) * 100 
+					: 0;
+				if (progressLine) progressLine.style.height = `${itemProgress}%`;
+			}
+		}
+
+		updateActiveState();
+		window.addEventListener('scroll', updateActiveState, { passive: true });
+
+		links.forEach(link => {
+			link.addEventListener('click', (e) => {
+				e.preventDefault();
+				const href = link.getAttribute('href');
+				if (!href) return;
+				
+				const targetId = href.slice(1);
+				const element = document.getElementById(targetId);
+				if (element) {
+					const offset = 80;
+					const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+					window.scrollTo({
+						top: elementPosition - offset,
+						behavior: 'smooth',
+					});
+				}
+			});
+		});
+	}
+
+	document.addEventListener('astro:page-load', initTOC);
+	initTOC();
+</script>
